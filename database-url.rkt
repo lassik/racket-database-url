@@ -45,7 +45,7 @@
      (hash-set! kw '#:user user)
      (hash-set! kw '#:password password))
     (else
-     "Too many colons in user:password part of URL")))
+     (error "Too many colons in user:password part of URL"))))
 
 (define (parse-server! u kw)
   (cond ((string? (url-host u))
