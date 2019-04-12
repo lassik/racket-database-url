@@ -36,62 +36,57 @@
                                   (error "DATABASE_URL not set"))))
         (else (error "Argument is not a string or URL"))))
 
-(define (parse-user-and-password! u kw)
+(define (parse-user-and-password u kw)
   (match (string-split (or (url-user u) "") ":")
-    ((list) #f)
-    ((list user)
-     (hash-set! kw '#:user user))
-    ((list user password)
-     (hash-set! kw '#:user user)
-     (hash-set! kw '#:password password))
-    (else
-     (error "Too many colons in user:password part of URL"))))
+    ((list) kw)
+    ((list user) (hash-set kw '#:user user))
+    ((list user password) (hash-set* kw '#:user user '#:password password))
+    (else (error "Too many colons in user:password part of URL"))))
 
-(define (parse-server! u kw)
-  (cond ((string? (url-host u))
-         (hash-set! kw '#:server (url-host u))
-         (hash-set! kw '#:port (url-port u))
-         (hash-set! kw '#:database (url-path-as-database-name u)))
-        (else
-         (hash-set! kw '#:socket (url-path-as-file-path u)))))
+(define (parse-server u kw)
+  (if (string? (url-host u))
+      (hash-set* kw
+                 '#:server (url-host u)
+                 '#:port (url-port u)
+                 '#:database (url-path-as-database-name u))
+      (hash-set kw '#:socket (url-path-as-file-path u))))
 
-(define (parse-sslmode! u kw)
+(define (parse-sslmode u kw)
   (match (assoc 'sslmode (url-query u))
-    (#f #f)
-    ((cons sslmode "enable")  (hash-set! kw '#:ssl 'yes))
-    ((cons sslmode "disable") (hash-set! kw '#:ssl 'no))
-    (else  (error "Unknown sslmode argument in database URL"))))
+    (#f kw)
+    ((cons sslmode "enable") (hash-set kw '#:ssl 'yes))
+    ((cons sslmode "disable") (hash-set kw '#:ssl 'no))
+    (else (error "Unknown sslmode argument in database URL"))))
 
-(define (parse-path-only! u kw)
+(define (parse-path-only u kw)
   (when (url-host u)
     (error "URL must not have a host"))
   (when (url-port u)
     (error "URL must not have a port"))
   (let ((p (url-path-as-file-path u)))
     (unless p (error "URL must have a path"))
-    (hash-set! kw '#:database p)))
+    (hash-set kw '#:database p)))
 
 (define (parser connect . steps)
   (lambda (u)
-    (let ((kw-hash (make-hash)))
-      (for-each (lambda (step!) (step! u kw-hash))
-                steps)
-      (values kw-hash connect))))
+    (values (foldl (lambda (step kw-hash) (step u kw-hash))
+                   (hash) steps)
+            connect)))
 
 (define mysql-parser
   (parser mysql-connect
-          parse-user-and-password!
-          parse-server!))
+          parse-user-and-password
+          parse-server))
 
 (define postgresql-parser
   (parser postgresql-connect
-          parse-user-and-password!
-          parse-server!
-          parse-sslmode!))
+          parse-user-and-password
+          parse-server
+          parse-sslmode))
 
 (define sqlite-parser
   (parser sqlite3-connect
-          parse-path-only!))
+          parse-path-only))
 
 (define schemes
   (make-hash
