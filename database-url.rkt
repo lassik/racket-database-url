@@ -89,12 +89,12 @@
           parse-path-only))
 
 (define schemes
-  (make-hash
-   (list (cons "mysql" mysql-parser)
-         (cons "pg" postgresql-parser)
-         (cons "postgres" postgresql-parser)
-         (cons "postgresql" postgresql-parser)
-         (cons "sqlite" sqlite-parser))))
+  (hash
+   "mysql"       mysql-parser
+   "pg"          postgresql-parser
+   "postgres"    postgresql-parser
+   "postgresql"  postgresql-parser
+   "sqlite"      sqlite-parser))
 
 (define (database-url-parse u)
   (let* ((u (coerce-to-url u))
