@@ -15,13 +15,19 @@
                     keys)))
     (keyword-apply proc keys vals '())))
 
-(define (url-path-as-we-want u)
-  (if (not (url-path u))
-      #f
-      (string-join
-       (map (lambda (u-path-component) "x")
-            (url-path u))
-       "/")))
+(define (url-path* u)
+  (and (url-path u)
+       (filter non-empty-string? (map path/param-path (url-path u)))))
+
+(define (url-path-as-file-path u)
+  (let ((p (url-path* u)))
+    (string-join (if (url-path-absolute? u) (cons "" p) p)
+                 "/")))
+
+(define (url-path-as-database-name u)
+  (match (url-path* u)
+    ((list database-name) database-name)
+    (else (error "Database URL with server must have one path component"))))
 
 (define (coerce-to-url u)
   (cond ((url? u) u)
@@ -45,9 +51,9 @@
   (cond ((string? (url-host u))
          (hash-set! kw '#:server (url-host u))
          (hash-set! kw '#:port (url-port u))
-         (hash-set! kw '#:database (url-path-as-we-want u)))
+         (hash-set! kw '#:database (url-path-as-database-name u)))
         (else
-         (hash-set! kw '#:socket (url-path-as-we-want u)))))
+         (hash-set! kw '#:socket (url-path-as-file-path u)))))
 
 (define (parse-sslmode! u kw)
   (match (assoc 'sslmode (url-query u))
@@ -61,9 +67,9 @@
     (error "URL must not have a host"))
   (when (url-port u)
     (error "URL must not have a port"))
-  (unless (url-path-as-we-want u)
-    (error "URL must have a path"))
-  (hash-set! kw '#:database (url-path-as-we-want u)))
+  (let ((p (url-path-as-file-path u)))
+    (unless p (error "URL must have a path"))
+    (hash-set! kw '#:database p)))
 
 (define (parser connect . steps)
   (lambda (u)

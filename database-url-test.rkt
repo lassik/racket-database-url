@@ -18,7 +18,7 @@
   (check-database-url
    mysql-connect
    "mysql://user:pass@localhost/dbname"
-   '((#:database . "x")
+   '((#:database . "dbname")
      (#:password . "pass")
      (#:port . #f)
      (#:server . "localhost")
@@ -26,13 +26,13 @@
   (check-database-url
    mysql-connect
    "mysql:/var/run/mysqld/mysqld.sock"
-   '((#:socket . "x/x/x/x"))))
+   '((#:socket . "/var/run/mysqld/mysqld.sock"))))
 
 (test-case "postgresql"
   (check-database-url
    postgresql-connect
    "pg://user:pass@localhost/dbname?sslmode=disable"
-   '((#:database . "x")
+   '((#:database . "dbname")
      (#:password . "pass")
      (#:port . #f)
      (#:server . "localhost")
@@ -41,7 +41,7 @@
   (check-database-url
    postgresql-connect
    "postgres://user:pass@localhost/dbname"
-   '((#:database . "x")
+   '((#:database . "dbname")
      (#:password . "pass")
      (#:port . #f)
      (#:server . "localhost")
@@ -49,7 +49,7 @@
   (check-database-url
    postgresql-connect
    "postgresql://user:pass@localhost/mydatabase/?sslmode=disable"
-   '((#:database . "x/x")
+   '((#:database . "mydatabase")
      (#:password . "pass")
      (#:port . #f)
      (#:server . "localhost")
@@ -60,8 +60,8 @@
   (check-database-url
    sqlite3-connect
    "sqlite:/path/to/file.db"
-   '((#:database . "x/x/x")))
+   '((#:database . "/path/to/file.db")))
   (check-database-url
    sqlite3-connect
    "sqlite:mydatabase.sqlite3"
-   '((#:database . "x"))))
+   '((#:database . "mydatabase.sqlite3"))))
