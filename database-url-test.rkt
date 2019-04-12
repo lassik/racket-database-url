@@ -6,7 +6,7 @@
 (require
  db
  rackunit
- "database-url.rkt")
+ database-url)
 
 (define (check-database-url wanted-connect u wanted-kw-alist)
   (let-values (((kw-hash connect) (database-url-parse u)))
