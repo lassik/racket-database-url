@@ -45,10 +45,12 @@
 
 (define (parse-server u kw)
   (if (string? (url-host u))
-      (hash-set* kw
-                 '#:server (url-host u)
-                 '#:port (url-port u)
-                 '#:database (url-path-as-database-name u))
+      (let ((kw (hash-set* kw
+                           '#:server (url-host u)
+                           '#:database (url-path-as-database-name u))))
+        (if (url-port u)
+            (hash-set kw '#:port (url-port u))
+            kw))
       (hash-set kw '#:socket (url-path-as-file-path u))))
 
 (define (parse-sslmode u kw)

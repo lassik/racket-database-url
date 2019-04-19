@@ -20,7 +20,6 @@
    "mysql://user:pass@localhost/dbname"
    '((#:database . "dbname")
      (#:password . "pass")
-     (#:port . #f)
      (#:server . "localhost")
      (#:user . "user")))
   (check-database-url
@@ -34,7 +33,6 @@
    "pg://user:pass@localhost/dbname?sslmode=disable"
    '((#:database . "dbname")
      (#:password . "pass")
-     (#:port . #f)
      (#:server . "localhost")
      (#:ssl . no)
      (#:user . "user")))
@@ -43,7 +41,6 @@
    "postgres://user:pass@localhost/dbname"
    '((#:database . "dbname")
      (#:password . "pass")
-     (#:port . #f)
      (#:server . "localhost")
      (#:user . "user")))
   (check-database-url
@@ -51,7 +48,6 @@
    "postgresql://user:pass@localhost/mydatabase/?sslmode=disable"
    '((#:database . "mydatabase")
      (#:password . "pass")
-     (#:port . #f)
      (#:server . "localhost")
      (#:ssl . no)
      (#:user . "user"))))
