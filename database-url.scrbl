@@ -30,7 +30,6 @@ For example:
 > (database-url-parse "mysql://user:pass@localhost/dbname")
 '#hash((#:database . "dbname")
        (#:password . "pass")
-       (#:port . #f)
        (#:server . "localhost")
        (#:user . "user"))
 \#<procedure:mysql-connect>
