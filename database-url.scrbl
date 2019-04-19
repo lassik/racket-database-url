@@ -8,12 +8,12 @@ now followed by many web developers recommend that web applications
 gets their configuration from environment variables. Database
 connection parameters are usually given all in one environment
 variable in the form of a URL. This variable is normally called
-DATABASE_URL. This procedure provides procedures to translate database
+DATABASE_URL. This module provides procedures to translate database
 URLs into a form that Racket's @racketmodname[db] module can use.
 
 MySQL, PostgreSQL and SQLite URLs are currently supported.
 
-@defproc[(database-url-parse [u string])
+@defproc[(database-url-parse [u (one-of/c url string #f)])
          (Values hash procedure)]{
 
 Parse @racket[u] as a database URL. @racket[u] can be a @racket[url]
@@ -22,7 +22,7 @@ read from the DATABASE_URL environment variable.
 
 The procedure returns two values: a hash table of keyword arguments
 suitable for a database connect procedure from the @racketmodname[db]
-libray; and the correct procedure.
+libray; and the right connect procedure to use.
 
 For example:
 
@@ -44,5 +44,5 @@ procedure and its keyword arguments seprately, returns a closure of no
 arguments that will call the right connector with the right arguments
 to connect to the database.
 
-Most people will probably want to use skip database-url-parse and
-instead use this procedure directly.}
+Most people will probably want to use skip database-url-parse and use
+this procedure directly.}
