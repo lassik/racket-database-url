@@ -36,12 +36,12 @@ For example:
 ]}
 
 @defproc[(database-url-connector [u (one-of/c url string #f)])
-         (Values (-> any))]{
+         (-> any)]{
 
 Like @racket[database-url-parse] but instead of returning a connect
-procedure and its keyword arguments seprately, returns a closure of no
-arguments that will call the right connector with the right arguments
-to connect to the database.
+procedure and its keyword arguments separately, returns a closure of
+no arguments that will call the right connector with the right
+arguments to connect to the database.
 
-Most people will probably want to use skip database-url-parse and use
-this procedure directly.}
+Most people will probably want to skip database-url-parse and use this
+procedure directly.}
