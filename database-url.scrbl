@@ -14,7 +14,7 @@ URLs into a form that Racket's @racketmodname[db] module can use.
 MySQL, PostgreSQL and SQLite URLs are currently supported.
 
 @defproc[(database-url-parse [u (one-of/c url string #f)])
-         (Values hash procedure)]{
+         (values hash procedure)]{
 
 Parse @racket[u] as a database URL. @racket[u] can be a @racket[url]
 object, a string, or @code["#f"]. In case of @code["#f"] the URL is
@@ -22,7 +22,7 @@ read from the DATABASE_URL environment variable.
 
 The procedure returns two values: a hash table of keyword arguments
 suitable for a database connect procedure from the @racketmodname[db]
-libray; and the right connect procedure to use.
+library; and the right connect procedure to use.
 
 For example:
 
